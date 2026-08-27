@@ -70,6 +70,8 @@
   .legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
 
   .child-filter{ display:flex; gap:6px; padding-bottom:10px; }
+  .add-all-cal-btn{ display:block; width:100%; font-family:'Work Sans', sans-serif; font-weight:800; font-size:0.82rem; letter-spacing:0.02em; background: var(--sun); color:#0B0A08; border:none; border-radius:12px; padding:11px 14px; margin-bottom:12px; cursor:pointer; box-shadow: 0 3px 10px rgba(255,199,0,0.25); transition: transform .1s ease; }
+  .add-all-cal-btn:active{ transform: scale(0.98); }
   .filter-btn{ font-family:'Work Sans', sans-serif; font-weight:700; font-size:0.74rem; border:1px solid rgba(255,199,0,0.25); background:var(--card); color:var(--ink-soft); padding:5px 12px; border-radius:20px; cursor:pointer; }
   .filter-btn.active{ background:var(--sun); color:#0B0A08; border-color:var(--sun); }
   .filter-btn.filter-jacob.active{ background:var(--jacob); color:#0B0A08; border-color:var(--jacob); }
@@ -86,19 +88,6 @@
   @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
 
   /* Booking banner */
-  .booking-banner{ position:relative; background: var(--tobook); color:#fff; margin: 12px 16px 0 16px; border-radius: var(--radius); padding: 20px 16px 6px 16px; box-shadow: var(--shadow); max-width:608px; margin-left:auto; margin-right:auto; overflow:hidden; }
-  .booking-banner::before{ content:''; position:absolute; top:0; left:0; right:0; height:6px; background: var(--stripe); background-size: 24px 24px; }
-  .booking-banner.done{ background: #0F2A1B; border: 1px solid var(--noah); }
-  .booking-banner h3{ margin:0 0 2px 0; font-family:'Caveat', cursive; font-size:1.5rem; display:flex; align-items:center; gap:6px; }
-  .booking-banner .sub{ font-size:0.72rem; opacity:0.95; margin-bottom:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }
-  .booking-item{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px dashed rgba(255,255,255,0.35); font-size:0.86rem; cursor:pointer; }
-  .booking-item:last-of-type{ border-bottom:none; }
-  .booking-item .box{ width:20px; height:20px; border-radius:6px; border:2px solid #fff; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
-  .booking-item.checked .box{ background:#fff; color:var(--tobook); }
-  .booking-item.checked .txt{ text-decoration:line-through; opacity:0.75; }
-  .booking-item .txt{ flex:1; font-weight:600; }
-  .booking-item .cost{ font-family:'IBM Plex Mono', monospace; font-size:0.74rem; opacity:0.9; }
-  .booking-banner .footnote-white{ font-size:0.7rem; opacity:0.9; line-height:1.5; padding: 6px 0 10px 0; }
 
   .day{ background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; overflow:hidden; border: 1px solid rgba(255,199,0,0.08); }
   .day.empty{ opacity: 0.55; }
@@ -217,6 +206,7 @@
     <button class="filter-btn filter-jacob" data-filter="jacob">Jacob</button>
     <button class="filter-btn filter-noah" data-filter="noah">Noah</button>
   </div>
+  <button id="addAllCalBtn" class="add-all-cal-btn">📅 Add ALL to Calendar</button>
   <nav class="tabs">
     <button data-tab="thisWeek" class="active">This Week</button>
     <button data-tab="fullTerm">Full Term</button>
@@ -225,8 +215,6 @@
     <button data-tab="clubSheet">Club Sheet</button>
   </nav>
 </header>
-
-<div id="bookingBannerWrap"></div>
 
 <main>
   <section class="panel active" id="thisWeek"></section>
@@ -255,29 +243,29 @@ const WEEKLY_TEMPLATE = [
 
   {id:'french-jacob', dow:1, title:'French Club (Jacob)', emoji:'🇫🇷', who:'jacob', time:'12:15', cost:'£5 / wk', location:'School', link:'https://www.lingotot.com/course/9e7466bc-58b7-4823-b74b-0e7e3300d5ce/term/a23878dc-5040-429a-9954-7084d1788eb9', notes:'Booked directly with the facilitator (Lingotot) — confirmed, £70 for the 14-week term.', status:'confirmed', session:'lunchtime'},
   {id:'french-noah', dow:1, title:'French Club (Noah)', emoji:'🇫🇷', who:'noah', time:'12:45', cost:'£5 / wk', location:'School', link:'https://www.lingotot.com/course/9e7466bc-58b7-4823-b74b-0e7e3300d5ce/term/a23878dc-5040-429a-9954-7084d1788eb9', notes:'Booked directly with the facilitator (Lingotot) — confirmed, £70 for the 14-week term.', status:'confirmed', session:'lunchtime'},
-  {id:'chess-jacob', dow:2, title:'Chess (Jacob)', emoji:'♟️', who:'jacob', time:'12:15', cost:'£6.50 / wk', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Needs booking via ParentMail.', status:'to-book', session:'lunchtime'},
-  {id:'chess-noah', dow:2, title:'Chess (Noah)', emoji:'♟️', who:'noah', time:'12:45', cost:'£6.50 / wk', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Needs booking via ParentMail — new for Noah this term.', status:'to-book', session:'lunchtime'},
-  {id:'gym-jacob', dow:2, title:'Gymnastics', emoji:'🤸', who:'jacob', time:'18:30', cost:'Direct debit (monthly)', location:'SEGC', link:'https://www.southessexgymnasticsclub.com/events', notes:'South Essex Gymnastics Club — paid by monthly direct debit, amount TBC. Runs all year round, including school holidays.', status:'tbc-cost', session:'evening', yearRound:true},
+  {id:'chess-jacob', dow:2, title:'Chess (Jacob)', emoji:'♟️', who:'jacob', time:'12:15', cost:'£6.50 / wk', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Booked.', status:'confirmed', session:'lunchtime'},
+  {id:'chess-noah', dow:2, title:'Chess (Noah)', emoji:'♟️', who:'noah', time:'12:45', cost:'£6.50 / wk', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Booked — new for Noah this term.', status:'confirmed', session:'lunchtime'},
+  {id:'gym-jacob', dow:2, title:'Gymnastics', emoji:'🤸', who:'jacob', time:'18:30', cost:'£68.90 / month', location:'SEGC', link:'https://www.southessexgymnasticsclub.com/events', notes:'South Essex Gymnastics Club — confirmed, paid monthly. Runs all year round, including school holidays.', status:'confirmed', session:'evening', yearRound:true},
   {id:'gym-noah', dow:2, title:'Gymnastics', emoji:'🤸', who:'noah', time:'17:00–18:00', cost:'£43.25 / month', location:'SEGC', link:'https://www.southessexgymnasticsclub.com/events', notes:'South Essex Gymnastics Club — confirmed, paid monthly. Runs all year round, including school holidays.', status:'confirmed', session:'evening', yearRound:true},
 
   {id:'cubs', dow:3, title:'Cubs', emoji:'🏕️', who:'jacob', time:'18:30', cost:'Confirm cost', location:'Confirm venue', link:'https://www.onlinescoutmanager.co.uk/login.php', notes:'Booking/payment managed via Online Scout Manager — cost to be confirmed.', status:'tbc-cost', session:'evening'},
-  {id:'cookery-noah', dow:3, title:'Cookery Club', emoji:'🍳', who:'noah', time:'After school (4:30)', cost:'£7.50 / session', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Needs booking via ParentMail — 14-week block.', status:'to-book', session:'after-school'},
-  {id:'latin-jacob', dow:3, title:'Latin Club', emoji:'🏛️', who:'jacob', time:'After school, until 16:00', cost:'Confirm cost', location:'School', notes:'Place allocated by the school — no booking needed. Starts Wed 16 Sept, runs to Wed 9 Dec. Does not run 19–30 Oct (school half term window for this club). Replaces Coding Ninjas.', status:'tbc-cost', session:'after-school', startDate:'2026-09-16', endDate:'2026-12-09', extraSkipRanges:[{start:'2026-10-19', end:'2026-10-30'}]},
+  {id:'latin-jacob', dow:3, title:'Latin Club', emoji:'🏛️', who:'jacob', time:'After school, until 16:00', cost:'Free', location:'School', notes:'Place allocated by the school — no booking needed, no cost. Starts Wed 16 Sept, runs to Wed 9 Dec. Does not run 19–30 Oct (school half term window for this club). Replaces Coding Ninjas.', status:'confirmed', session:'after-school', startDate:'2026-09-16', endDate:'2026-12-09', extraSkipRanges:[{start:'2026-10-19', end:'2026-10-30'}]},
 
-  {id:'okd-jacob', dow:4, title:'OKD Ballet', emoji:'🩰', who:'jacob', time:'After school (time TBC)', cost:'Confirm cost', location:'Confirm venue', link:'https://app.classmanager.com/portal/olive-kane-dance', notes:'Olive Kane Dance — confirm exact time and cost for autumn.', status:'tbc-time', session:'after-school'},
+  {id:'okd-jacob', dow:4, title:'OKD Ballet', emoji:'🩰', who:'jacob', time:'17:00–18:00', cost:'£10 / session', location:'Leyton Sports Ground Dance Studio', link:'https://app.classmanager.com/portal/olive-kane-dance', notes:'Olive Kane Dance — Grade 2 Ballet & Tap. Confirmed, 14 sessions x £10, term 07/09/2026–18/12/2026.', status:'confirmed', session:'after-school'},
   {id:'tutor-jacob', dow:4, title:'Tutor — Nhung', emoji:'📚', who:'jacob', time:'19:00', cost:'£40 / session', location:'Confirm venue', notes:'Nhung is a tutor, not a sports coach.', status:'confirmed', session:'evening'},
 
-  {id:'golf-maybe', dow:5, title:'Golf', emoji:'⛳', who:'both', time:'Time TBC', cost:'TBC', location:'WGC London', link:'https://parz.com/pages/wgc-london-book-a-service', notes:'Maybe, as with the summer schedule — confirm nearer the time.', status:'maybe', session:'other'},
+  {id:'cricket-jacob', dow:5, title:'Cricket', emoji:'🏏', who:'jacob', time:'16:45–18:00', cost:'Confirm cost', location:'Confirm venue', notes:'Fridays in September only. Golf takes over this slot from October.', status:'tbc-cost', session:'other', startDate:'2026-09-01', endDate:'2026-09-30'},
+  {id:'golf-maybe', dow:5, title:'Golf', emoji:'⛳', who:'jacob', time:'16:45–18:00 (approx)', cost:'TBC', location:'WGC London', link:'https://parz.com/pages/wgc-london-book-a-service', notes:'Takes over from Cricket on Fridays, starting October — time is approximate, same slot as Cricket.', status:'maybe', session:'other', startDate:'2026-10-01'},
   {id:'lamda-jacob', dow:5, title:'LAMDA', emoji:'🎭', who:'jacob', time:'Lunchtime', cost:'£6.50 / wk', location:'School', link:'https://activities.bookpebble.co.uk/activities/booking/90ba7454-5deb-45d4-8ed5-f8a493cb399d?from=profile&view=bookings', notes:'Booked directly with the facilitator via BookPebble.', status:'confirmed', session:'lunchtime'},
-  {id:'piano-jacob', dow:5, title:'Piano', emoji:'🎹', who:'jacob', time:'15 min, during the day (time TBC)', cost:'Confirm cost', location:'School', link:'https://ukvisionrcl.speedadmin.dk/account/ChooseUser?ReturnUrl=%2F', notes:'Confirm exact time slot with the school.', status:'tbc-time', session:'other'},
-  {id:'hiphop-noah', dow:5, title:'Hip Hop', emoji:'💃', who:'noah', time:'After school (4:30)', cost:'£7 / session', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Needs booking via ParentMail — 14-week block. Does not run on the last day of term.', status:'to-book', session:'after-school'},
+  {id:'piano-jacob', dow:5, title:'Piano', emoji:'🎹', who:'jacob', time:'15 min, during the day (time TBC)', cost:'£45.40 / month', location:'School', link:'https://ukvisionrcl.speedadmin.dk/account/ChooseUser?ReturnUrl=%2F', notes:'Confirm exact time slot with the school.', status:'tbc-time', session:'other'},
+  {id:'hiphop-noah', dow:5, title:'Hip Hop', emoji:'💃', who:'noah', time:'After school (4:30)', cost:'£7 / session', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Booked — 14-week block. Does not run on the last day of term.', status:'confirmed', session:'after-school'},
 
-  {id:'tennis-noah', dow:6, title:'Tennis', emoji:'🎾', who:'noah', time:'10:00', cost:'£23 / session (summer rate)', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Confirm autumn term booking and pricing.', status:'tbc-cost', session:'other'},
-  {id:'tennis-jacob', dow:6, title:'Tennis', emoji:'🎾', who:'jacob', time:'11:00', cost:'£23 / session (summer rate)', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Confirm autumn term booking and pricing.', status:'tbc-cost', session:'other'},
-  {id:'swim-noah', dow:6, title:'Swimming', emoji:'🏊', who:'noah', time:'15:00', cost:'Confirm cost', location:'Confirm venue', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Confirm venue and cost for autumn.', status:'tbc-cost', session:'other'},
-  {id:'swim-jacob', dow:6, title:'Swimming', emoji:'🏊', who:'jacob', time:'15:30', cost:'Confirm cost', location:'Confirm venue', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Confirm venue and cost for autumn.', status:'tbc-cost', session:'other'},
+  {id:'tennis-noah', dow:6, title:'Tennis', emoji:'🎾', who:'noah', time:'10:00–11:00', cost:'£10 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Red Ball Course, confirmed. 8 sessions x £10 = £80. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31']},
+  {id:'tennis-jacob', dow:6, title:'Tennis', emoji:'🎾', who:'jacob', time:'11:00–12:30', cost:'£15 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Orange/Green Ball Squad, confirmed. 8 sessions x £15 = £120. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31']},
+  {id:'swim-noah', dow:6, title:'Swimming', emoji:'🏊', who:'noah', time:'15:00–15:30', cost:'£133 / term', location:'Sylvestrian Leisure', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Goldfish1 group, Teaching Pool Lane 2. Confirmed, 5 Sept – 20 Dec.', status:'confirmed', session:'other'},
+  {id:'swim-jacob', dow:6, title:'Swimming', emoji:'🏊', who:'jacob', time:'15:30–16:00', cost:'£133 / term', location:'Sylvestrian Leisure', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Angelfish3 group, Main Pool Lane 2. Confirmed, 5 Sept – 20 Dec.', status:'confirmed', session:'other'},
 
-  {id:'rugby', dow:0, title:'Rugby', emoji:'🏉', who:'both', time:'Time TBC', cost:'Confirm cost', location:'Eton Manor RFC', link:'https://www.etonmanorrfc.com', notes:'Confirm time and cost for autumn.', status:'tbc-time', session:'other'},
+  {id:'rugby', dow:0, title:'Rugby', emoji:'🏉', who:'both', time:'11:00–12:00', cost:'Confirm cost', location:'Eton Manor RFC', link:'https://www.etonmanorrfc.com', notes:'Not yet booked — confirm cost.', status:'tbc-cost', session:'other'},
 ];
 
 /* Term blocks (Autumn 1 + Autumn 2, half term excluded) */
@@ -291,13 +279,6 @@ const BANK_HOLIDAYS = ['2026-08-31']; // Summer bank holiday
 const PRE_TERM = {start:'2026-08-31', end:'2026-09-02'}; // week before school starts — year-round clubs still run
 
 /* One-off school club registrations to book via ParentMail */
-const BOOKINGS = [
-  {id:'book-cookery-noah', title:'Cookery Club — Noah', cost:'£7.50 / session', who:'noah'},
-  {id:'book-hiphop-noah', title:'Hip Hop — Noah', cost:'£7 / session', who:'noah'},
-  {id:'book-chess-jacob', title:'Chess — Jacob', cost:'£6.50 / wk', who:'jacob'},
-  {id:'book-chess-noah', title:'Chess — Noah', cost:'£6.50 / wk', who:'noah'},
-];
-const BOOKING_OPENS = '2026-08-27T18:00:00+01:00';
 
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const DOW_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -321,9 +302,6 @@ function getBookedMap(){ try { return JSON.parse(localStorage.getItem('termBooke
 function isBooked(id){ return !!getBookedMap()[id]; }
 function setBooked(id, val){ const map = getBookedMap(); if(val) map[id]=true; else delete map[id]; try { localStorage.setItem('termBookedMap', JSON.stringify(map)); } catch(e){} }
 
-function getClubChecklist(){ try { return JSON.parse(localStorage.getItem('clubBookingChecklist')||'{}'); } catch(e){ return {}; } }
-function isClubBooked(id){ return !!getClubChecklist()[id]; }
-function setClubBooked(id, val){ const map = getClubChecklist(); if(val) map[id]=true; else delete map[id]; try { localStorage.setItem('clubBookingChecklist', JSON.stringify(map)); } catch(e){} }
 
 /* --- Generate dated activities from the weekly template --- */
 function inExtraSkipRange(t, dateStr){
@@ -337,6 +315,7 @@ function generateActivities(){
     while(dateStr <= block.end){
       const dow = new Date(dateStr+'T00:00:00').getDay();
       WEEKLY_TEMPLATE.forEach(t=>{
+        if(t.explicitDates) return; // handled separately, exact dates only
         if(t.dow !== dow) return;
         if(t.startDate && dateStr < t.startDate) return;
         if(t.endDate && dateStr > t.endDate) return;
@@ -346,6 +325,14 @@ function generateActivities(){
       });
       dateStr = addDays(dateStr, 1);
     }
+  });
+  /* Activities with an explicit fixed date list (e.g. an 8-session block that
+     doesn't line up cleanly with term weeks) — generate exactly these dates */
+  WEEKLY_TEMPLATE.forEach(t=>{
+    if(!t.explicitDates) return;
+    t.explicitDates.forEach(dateStr=>{
+      acts.push(Object.assign({}, t, {id: t.id+'-'+dateStr, date: dateStr, templateId: t.id}));
+    });
   });
   /* Year-round activities (e.g. BJJ, Gymnastics) still run through half term */
   let htDate = HALF_TERM.start;
@@ -421,49 +408,6 @@ function parseStartMinutes(t){
   return h*60+min;
 }
 
-/* ---------------- Booking banner ---------------- */
-function renderBookingBanner(){
-  const wrap = document.getElementById('bookingBannerWrap');
-  const allBooked = BOOKINGS.every(b=>isClubBooked(b.id));
-  const opens = new Date(BOOKING_OPENS);
-  const now = new Date();
-  const opensLabel = 'Thu 27 Aug, 6:00pm';
-
-  if(allBooked){
-    wrap.innerHTML = `<div class="booking-banner done">
-      <h3>✅ School clubs booked</h3>
-      <div class="sub">All ${BOOKINGS.length} outstanding bookings are marked done</div>
-    </div>`;
-    return;
-  }
-
-  let statusLine = now < opens
-    ? `🔴 CLUBS TO BOOK — ParentMail opens ${opensLabel}`
-    : `🔴 CLUBS TO BOOK`;
-
-  let items = BOOKINGS.map(b=>{
-    const checked = isClubBooked(b.id);
-    return `<div class="booking-item${checked?' checked':''}" data-club="${b.id}">
-      <span class="box">${checked?'✓':''}</span>
-      <span class="txt">${b.title}</span>
-      <span class="cost">${b.cost}</span>
-    </div>`;
-  }).join('');
-
-  wrap.innerHTML = `<div class="booking-banner">
-    <h3>${statusLine}</h3>
-    <div class="sub">14-week autumn term block — tap to tick off once booked</div>
-    ${items}
-    <div class="footnote-white">Cookery, Coding Ninjas and Hip Hop are booked via ParentMail (opens ${opensLabel}). Chess is booked directly with the facilitator.</div>
-  </div>`;
-}
-document.addEventListener('click', e=>{
-  const item = e.target.closest('.booking-item');
-  if(!item) return;
-  const id = item.dataset.club;
-  setClubBooked(id, !isClubBooked(id));
-  renderBookingBanner();
-});
 
 /* ---------------- This Week ---------------- */
 function getWeekMonday(d){
@@ -520,7 +464,7 @@ function renderDayCard(dateStr, todayStr){
     html += `<div class="empty-note">Nothing scheduled${childFilter!=='all'?' for this filter':''}.</div>`;
   } else {
     if(!inTerm){
-      html += `<div class="empty-note" style="margin-bottom:6px;">Outside term dates — these run year-round:</div>`;
+      html += `<div class="empty-note" style="margin-bottom:6px;">Outside normal term dates — extra session${dayActs.length>1?'s':''} below:</div>`;
     }
     dayActs.forEach(a=>{
       const booked = isBooked(a.id);
@@ -691,8 +635,8 @@ function parseICSRange(t){
   if(single!==null) return {startMin:single, endMin:single+60};
   return null;
 }
-function downloadICS(a){
-  if(!a.date) return;
+function buildVEvent(a){
+  if(!a.date) return null;
   const range = parseICSRange(a.time);
   const dateDigits = a.date.replace(/-/g,'');
   let dtLines;
@@ -708,24 +652,41 @@ function downloadICS(a){
   }
   const descParts = [a.cost, a.notes].filter(Boolean);
   const desc = descParts.join(' — ').replace(/\r?\n/g,' ');
-  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Autumn Term//EN','BEGIN:VEVENT',
+  const lines = ['BEGIN:VEVENT',
     `UID:${a.id}@jacobnoahautumn2026`, dtLines, `SUMMARY:${(a.title||'Activity').replace(/\r?\n/g,' ')}`];
   if(a.location) lines.push(`LOCATION:${a.location.replace(/\r?\n/g,' ')}`);
   if(desc) lines.push(`DESCRIPTION:${desc}`);
-  lines.push('END:VEVENT','END:VCALENDAR');
-  const ics = lines.join('\r\n');
+  lines.push('END:VEVENT');
+  return lines.join('\r\n');
+}
+function triggerICSDownload(ics, filename){
   const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = (a.title||'activity').replace(/[^a-z0-9]+/gi,'_') + '.ics';
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   setTimeout(()=>URL.revokeObjectURL(url), 2000);
 }
+function downloadICS(a){
+  const vevent = buildVEvent(a);
+  if(!vevent) return;
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Autumn Term//EN', vevent, 'END:VCALENDAR'].join('\r\n');
+  triggerICSDownload(ics, (a.title||'activity').replace(/[^a-z0-9]+/gi,'_') + '.ics');
+}
+function downloadAllICS(){
+  const filterVal = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+  const items = ACTIVITIES.filter(a=>matchesFilter(a));
+  const vevents = items.map(buildVEvent).filter(Boolean);
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Autumn Term//EN', ...vevents, 'END:VCALENDAR'].join('\r\n');
+  const label = filterVal==='all' ? 'all' : filterVal;
+  triggerICSDownload(ics, `autumn_term_${label}_activities.ics`);
+}
 
 document.addEventListener('click', e=>{
+  if(e.target.closest('#addAllCalBtn')){ downloadAllICS(); return; }
   if(e.target.closest('#overlay') && !e.target.closest('.sheet')){ closeSheet(); return; }
   const icsBtn = e.target.closest('.ics-btn');
   if(icsBtn){ const a = ALL_ITEMS.find(x=>x.id===icsBtn.dataset.id); if(a) downloadICS(a); return; }
@@ -784,36 +745,140 @@ function renderNeedsAttention(){
   html += `</div></div>`;
   return html;
 }
+function parseCostAmount(costStr){
+  if(!costStr) return null;
+  if(/^free$/i.test(costStr.trim())) return {amount:0, unit:'week'};
+  const m = costStr.match(/£\s*(\d+(?:\.\d+)?)\s*\/\s*(wk|week|session|month|term)/i);
+  if(!m) return null;
+  let unit = m[2].toLowerCase();
+  if(unit==='wk'||unit==='week'||unit==='session') unit='week';
+  else if(unit==='month') unit='month';
+  else if(unit==='term') unit='term';
+  return {amount:parseFloat(m[1]), unit};
+}
+function whoLabel(who){ return who==='both'?'Both':who==='jacob'?'Jacob':who==='noah'?'Noah':'Family'; }
+function costTable(items, dayCol){
+  let rows = items.map(a=>{
+    const p = parseCostAmount(a.cost);
+    return `<tr><td>${a.title} <span class="pill-small" style="background:var(--noah-soft);color:var(--noah);">${whoLabel(a.who)}</span></td>${dayCol?`<td>${DOW_FULL[a.dow]}</td>`:''}<td class="num">${p.amount===0?'Free':'£'+p.amount.toFixed(2)}</td></tr>`;
+  }).join('');
+  return rows;
+}
 function renderCosts(){
   const el = document.getElementById('costs');
-  const known = WEEKLY_TEMPLATE.filter(a=>a.status==='confirmed' && /£\d/.test(a.cost||''));
-  let rowsHtml = '';
-  let total = 0;
-  known.forEach(a=>{
-    const m = (a.cost.match(/£(\d+(\.\d+)?)/)||[])[1];
-    const val = m?parseFloat(m):0;
-    total += val;
-    rowsHtml += `<tr><td>${a.title} <span class="pill-small" style="background:var(--noah-soft);color:var(--noah);">${a.who==='both'?'Both':a.who==='jacob'?'Jacob':'Noah'}</span></td><td>${DOW_FULL[a.dow]}</td><td class="num">${a.cost}</td></tr>`;
-  });
-  const tbcCount = WEEKLY_TEMPLATE.filter(a=>a.status!=='confirmed').length;
+  const priced = WEEKLY_TEMPLATE.filter(a=>a.status!=='tbc-cost' && parseCostAmount(a.cost));
+  const weeklyItems = priced.filter(a=>parseCostAmount(a.cost).unit==='week');
+  const monthlyItems = priced.filter(a=>parseCostAmount(a.cost).unit==='month');
+  const termItems = priced.filter(a=>parseCostAmount(a.cost).unit==='term');
+
+  const sumFor = (items, who) => items.reduce((s,a)=>{
+    if(a.who===who || a.who==='both') return s + parseCostAmount(a.cost).amount;
+    return s;
+  }, 0);
+
+  const jWeekly = sumFor(weeklyItems,'jacob'), nWeekly = sumFor(weeklyItems,'noah');
+  const jMonthly = sumFor(monthlyItems,'jacob'), nMonthly = sumFor(monthlyItems,'noah');
+  const jTerm = sumFor(termItems,'jacob'), nTerm = sumFor(termItems,'noah');
+
+  const weeklyTotal = jWeekly + nWeekly;
+  const monthlyTotal = jMonthly + nMonthly;
+  const termTotal = jTerm + nTerm;
+
+  const TERM_MONTHS = 4; // Sep, Oct, Nov, Dec — the four calendar months the autumn term spans
+  function wholeTermCostFor(a){
+    const p = parseCostAmount(a.cost);
+    if(!p) return 0;
+    if(p.unit==='week'){
+      const count = ACTIVITIES.filter(x=>x.templateId===a.id).length;
+      return p.amount * count;
+    }
+    if(p.unit==='month') return p.amount * TERM_MONTHS;
+    return p.amount; // one-off / whole-term amount already
+  }
+  const sumWholeTerm = (who) => priced.reduce((s,a)=>{
+    if(a.who===who || a.who==='both') return s + wholeTermCostFor(a);
+    return s;
+  }, 0);
+  const jWholeTerm = sumWholeTerm('jacob');
+  const nWholeTerm = sumWholeTerm('noah');
+
+  const tbcCount = WEEKLY_TEMPLATE.filter(a=>a.status==='tbc-cost' || a.status==='to-book').length;
 
   el.innerHTML = renderNeedsAttention() + `
     <div class="cost-card">
       <h3>Known weekly costs</h3>
       <table class="costs">
         <thead><tr><th>Activity</th><th>Day</th><th class="num">Cost</th></tr></thead>
-        <tbody>${rowsHtml}</tbody>
+        <tbody>${costTable(weeklyItems, true)}</tbody>
       </table>
-      <div class="footnote">${tbcCount} activities still have unconfirmed cost, time or booking status — see "Needs attention" above.</div>
+    </div>
+
+    ${monthlyItems.length ? `
+    <div class="cost-card">
+      <h3>Known monthly costs</h3>
+      <table class="costs">
+        <thead><tr><th>Activity</th><th class="num">Cost</th></tr></thead>
+        <tbody>${costTable(monthlyItems, false)}</tbody>
+      </table>
+    </div>` : ''}
+
+    ${termItems.length ? `
+    <div class="cost-card">
+      <h3>One-off / whole-term costs</h3>
+      <table class="costs">
+        <thead><tr><th>Activity</th><th class="num">Cost</th></tr></thead>
+        <tbody>${costTable(termItems, false)}</tbody>
+      </table>
+    </div>` : ''}
+
+    <div class="cost-card">
+      <h3>Costs by child</h3>
+      <div class="by-child">
+        <div class="child-card jacob">
+          <h4>Jacob</h4>
+          <div class="row"><span>Weekly</span><b>£${jWeekly.toFixed(2)}</b></div>
+          <div class="row"><span>Monthly</span><b>£${jMonthly.toFixed(2)}</b></div>
+          <div class="row"><span>One-off</span><b>£${jTerm.toFixed(2)}</b></div>
+        </div>
+        <div class="child-card noah">
+          <h4>Noah</h4>
+          <div class="row"><span>Weekly</span><b>£${nWeekly.toFixed(2)}</b></div>
+          <div class="row"><span>Monthly</span><b>£${nMonthly.toFixed(2)}</b></div>
+          <div class="row"><span>One-off</span><b>£${nTerm.toFixed(2)}</b></div>
+        </div>
+      </div>
+      <div class="footnote" style="margin-top:10px;">Shown separately since they're billed on different schedules. See "Total for the whole term" below for a single combined figure per child.</div>
     </div>
 
     <div class="cost-card">
-      <h3>Running total</h3>
-      <div class="total-strip">
-        <span class="label">Known weekly total</span>
-        <span class="amount">£${total.toFixed(2)}</span>
+      <h3>Total for the whole term</h3>
+      <div class="by-child">
+        <div class="child-card jacob">
+          <h4>Jacob</h4>
+          <div class="total"><span>Whole term</span><span>£${jWholeTerm.toFixed(2)}</span></div>
+        </div>
+        <div class="child-card noah">
+          <h4>Noah</h4>
+          <div class="total"><span>Whole term</span><span>£${nWholeTerm.toFixed(2)}</span></div>
+        </div>
       </div>
-      <div class="footnote" style="margin-top:10px;">This only includes activities with a confirmed weekly cost. BJJ, Gymnastics, Cubs, OKD Ballet, Piano, Tennis, Swimming, Rugby and Golf still need costs confirmed for autumn before they can be added to this total.</div>
+      <div class="total-strip" style="margin-top:12px;">
+        <span class="label">Household — whole term</span>
+        <span class="amount">£${(jWholeTerm+nWholeTerm).toFixed(2)}</span>
+      </div>
+      <div class="footnote" style="margin-top:10px;">Calculated using the actual number of sessions each activity runs across the term (from the schedule), monthly costs × 4 (Sep–Dec), and one-off costs as listed. Based only on confirmed costs — activities still needing a price won't be included.</div>
+    </div>
+
+    <div class="cost-card">
+      <h3>Household running total</h3>
+      <div class="total-strip">
+        <span class="label">Weekly total</span>
+        <span class="amount">£${weeklyTotal.toFixed(2)}</span>
+      </div>
+      ${monthlyTotal>0?`<div class="total-strip" style="margin-top:10px;"><span class="label">Monthly total</span><span class="amount">£${monthlyTotal.toFixed(2)}</span></div>`:''}
+      ${termTotal>0?`<div class="total-strip" style="margin-top:10px;"><span class="label">One-off total</span><span class="amount">£${termTotal.toFixed(2)}</span></div>`:''}
+      <div class="footnote" style="margin-top:10px;">Household total = Jacob's total + Noah's total. Shared activities like BJJ are counted once per child (each has their own paid place), so they add up rather than being split.</div>
+      <div class="footnote" style="margin-top:6px;">${tbcCount} ${tbcCount===1?'activity':'activities'} still ${tbcCount===1?'needs':'need'} a cost confirmed or a booking completed — see "Needs attention" above. These aren't included in any total yet.</div>
     </div>
   `;
 }
@@ -831,7 +896,6 @@ renderThisWeek();
 renderFullTerm();
 renderPattern();
 renderCosts();
-renderBookingBanner();
 renderClubSheet();
 </script>
 </body>
