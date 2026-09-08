@@ -115,6 +115,7 @@
   .chip .info{ flex:1; min-width:0; }
   .chip .info .t{ font-weight:600; font-size:0.92rem; color: var(--ink); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .chip .info .m{ font-size:0.74rem; color: var(--ink-soft); margin-top:1px; }
+  .chip .info .theme-line{ display:block; font-size:0.7rem; color: var(--sun); font-weight:700; margin-top:2px; }
   .tag{ font-size: 0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; padding: 1px 6px; border-radius: 20px; background: var(--maybe); color:#0B0A08; }
   .tag.tobook{ background: var(--tobook); color:#fff; }
   .chip .price{ font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color: var(--ink-soft); white-space:nowrap; }
@@ -154,8 +155,8 @@
   .badge.jacob{ background: var(--jacob-soft); color: var(--jacob); }
   .badge.noah{ background: var(--noah-soft); color: var(--noah); }
   .badge.family{ background: var(--family-soft); color: var(--family); }
-  .sheet .actions{ display:flex; gap:10px; margin-top:18px; }
-  .sheet .actions a, .sheet .actions button{ flex:1; text-align:center; padding: 12px 14px; border-radius:12px; border:none; font-weight:700; font-size:0.88rem; text-decoration:none; cursor:pointer; font-family:'Work Sans', sans-serif; }
+  .sheet .actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+  .sheet .actions a, .sheet .actions button{ flex:1; min-width:120px; text-align:center; padding: 12px 14px; border-radius:12px; border:none; font-weight:700; font-size:0.88rem; text-decoration:none; cursor:pointer; font-family:'Work Sans', sans-serif; }
   .btn-primary{ background: var(--sun); color: #0B0A08; }
   .btn-secondary{ background: var(--paper-deep); color: var(--ink); border: 1px solid rgba(255,199,0,0.2); }
   .no-link-note{ font-size:0.78rem; color:var(--ink-soft); font-style:italic; margin-top:14px; }
@@ -266,12 +267,13 @@ const WEEKLY_TEMPLATE = [
   {id:'piano-jacob', dow:5, title:'Piano', emoji:'🎹', who:'jacob', time:'15 min, during the day (time TBC)', cost:'£45.40 / month', location:'School', link:'https://ukvisionrcl.speedadmin.dk/account/ChooseUser?ReturnUrl=%2F', notes:'Confirm exact time slot with the school.', status:'tbc-time', session:'other'},
   {id:'hiphop-noah', dow:5, title:'Hip Hop', emoji:'💃', who:'noah', time:'After school (4:30)', cost:'£7 / session', location:'School', link:'https://pmx.parentmail.co.uk/#core', notes:'Booked — 14-week block. Does not run on the last day of term.', status:'confirmed', session:'after-school'},
 
-  {id:'tennis-noah', dow:6, title:'Tennis', emoji:'🎾', who:'noah', time:'10:00–11:00', cost:'£10 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Red Ball Course, confirmed. 8 sessions x £10 = £80. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31']},
-  {id:'tennis-jacob', dow:6, title:'Tennis', emoji:'🎾', who:'jacob', time:'11:00–12:30', cost:'£15 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Orange/Green Ball Squad, confirmed. 8 sessions x £15 = £120. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31']},
+  {id:'tennis-noah', dow:6, title:'Tennis', emoji:'🎾', who:'noah', time:'10:00–11:00', cost:'£10 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Red Ball Course, confirmed. 8 sessions x £10 = £80. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31'], weeklyThemes:{'2026-09-12':'Consistency & Control','2026-09-19':'Forehand','2026-09-26':'Backhand','2026-10-03':'Serve & Return','2026-10-10':'Attack','2026-10-17':'Defend & Recover','2026-10-24':'Matchplay & Competition'}},
+  {id:'tennis-jacob', dow:6, title:'Tennis', emoji:'🎾', who:'jacob', time:'11:00–12:30', cost:'£15 / session', location:'Linkside Academy', link:'https://bookings.linksideacademy.com', notes:'Orange/Green Ball Squad, confirmed. 8 sessions x £15 = £120. Not yet re-booked beyond 31 Oct.', status:'confirmed', session:'other', explicitDates:['2026-09-12','2026-09-19','2026-09-26','2026-10-03','2026-10-10','2026-10-17','2026-10-24','2026-10-31'], weeklyThemes:{'2026-09-12':'Consistency & Control','2026-09-19':'Forehand','2026-09-26':'Backhand','2026-10-03':'Serve & Return','2026-10-10':'Attack','2026-10-17':'Defend & Recover','2026-10-24':'Matchplay & Competition'}},
   {id:'swim-noah', dow:6, title:'Swimming', emoji:'🏊', who:'noah', time:'15:00–15:30', cost:'£133 / term', location:'Sylvestrian Leisure', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Goldfish1 group, Teaching Pool Lane 2. Confirmed, 5 Sept – 20 Dec.', status:'confirmed', session:'other'},
   {id:'swim-jacob', dow:6, title:'Swimming', emoji:'🏊', who:'jacob', time:'15:30–16:00', cost:'£133 / term', location:'Sylvestrian Leisure', link:'https://centre.resasports.com/web-front/48497023/bookings/activity-or-resource-category?section=courses', notes:'Angelfish3 group, Main Pool Lane 2. Confirmed, 5 Sept – 20 Dec.', status:'confirmed', session:'other'},
 
-  {id:'rugby', dow:0, title:'Rugby', emoji:'🏉', who:'both', time:'11:00–12:00', cost:'Confirm cost', location:'Eton Manor RFC', link:'https://www.etonmanorrfc.com', notes:'Not yet booked — confirm cost.', status:'tbc-cost', session:'other'},
+  {id:'rugby-jacob', dow:0, title:'Rugby', emoji:'🏉', who:'jacob', time:'11:00–12:00', cost:'£152 / year', location:'Eton Manor RFC, The New Wilderness, E11 2JA', link:'https://www.etonmanorrfc.com', link2:'https://gms.rfu.com/GMS/Dashboard/Individual', link2Label:'GMS Membership Dashboard', notes:'C1 Mini Player (U7–U10) membership, paid — Membership No. 1141078. Annual membership (not just this term) — covers RFU insurance/eligibility. Registered on Teamo (teamo.chat/club/register/emrfc). Bring water, studded boots and weather gear; be pitchside-ready for 11am. Tell the Team Admin/Head Coach about any allergies or medical needs. A £70/year Parent/Guardian membership (Kevin) was also paid — not counted in either child\'s total.', status:'confirmed', session:'other'},
+  {id:'rugby-noah', dow:0, title:'Rugby', emoji:'🏉', who:'noah', time:'11:00–12:00', cost:'£60 / year', location:'Eton Manor RFC, The New Wilderness, E11 2JA', link:'https://www.etonmanorrfc.com', link2:'https://gms.rfu.com/GMS/Dashboard/Individual', link2Label:'GMS Membership Dashboard', notes:'D1 Rugby Rascal Player (U4–U6) membership, paid (discounted from £77) — Membership No. 1141079. Eton Manor U6 group: "The Little Rugby Crew", Sundays 11am. Annual membership (not just this term). Registered on Teamo. Bring water, studded boots and weather gear.', status:'confirmed', session:'other'},
 ];
 
 /* Term blocks (Autumn 1 + Autumn 2, half term excluded) */
@@ -337,7 +339,8 @@ function generateActivities(){
   WEEKLY_TEMPLATE.forEach(t=>{
     if(!t.explicitDates) return;
     t.explicitDates.forEach(dateStr=>{
-      acts.push(Object.assign({}, t, {id: t.id+'-'+dateStr, date: dateStr, templateId: t.id}));
+      const theme = t.weeklyThemes && t.weeklyThemes[dateStr];
+      acts.push(Object.assign({}, t, {id: t.id+'-'+dateStr, date: dateStr, templateId: t.id, theme: theme||null}));
     });
   });
   /* Year-round activities (e.g. BJJ, Gymnastics) still run through half term */
@@ -479,6 +482,7 @@ function renderDayCard(dateStr, todayStr){
         <span class="info">
           <span class="t">${a.title}${statusTag(a)}</span>
           <span class="m">${a.time?a.time+' · ':''}${a.location?a.location:(a.notes?truncate(a.notes,38):'')}</span>
+          ${a.theme?`<span class="theme-line">🎯 ${a.theme}</span>`:''}
         </span>
         <span class="price">${shortCost(a.cost)}</span>
       </button>`;
@@ -567,6 +571,7 @@ function renderPattern(){
           <span class="info">
             <span class="t">${a.title}${statusTag(a)}</span>
             <span class="m">${a.time?a.time+' · ':''}${a.location?a.location:''}</span>
+            ${a.theme?`<span class="theme-line">🎯 ${a.theme}</span>`:''}
           </span>
           <span class="price">${shortCost(a.cost)}</span>
         </button>`;
@@ -592,10 +597,12 @@ function openSheet(id){
   if(a.time) rows += `<div class="row"><dt>Time</dt><dd>${a.time}</dd></div>`;
   if(a.location) rows += `<div class="row"><dt>Where</dt><dd>${a.location}</dd></div>`;
   if(a.cost) rows += `<div class="row"><dt>Cost</dt><dd>${a.cost}</dd></div>`;
+  if(a.theme) rows += `<div class="row"><dt>This week</dt><dd>🎯 ${a.theme}</dd></div>`;
   if(a.notes) rows += `<div class="row"><dt>Notes</dt><dd>${a.notes}</dd></div>`;
 
   let actions = `<div class="actions">`;
   if(a.link) actions += `<a class="btn-primary" href="${a.link}" target="_blank" rel="noopener">Visit website ↗</a>`;
+  if(a.link2) actions += `<a class="btn-secondary" href="${a.link2}" target="_blank" rel="noopener">${a.link2Label||'Other link'} ↗</a>`;
   if(a.date) actions += `<button class="btn-secondary ics-btn" data-id="${a.id}">＋ Calendar</button>`;
   actions += `</div>`;
   if(!a.link) actions += `<div class="no-link-note">No website link saved for this one yet.</div>`;
@@ -754,12 +761,13 @@ function renderNeedsAttention(){
 function parseCostAmount(costStr){
   if(!costStr) return null;
   if(/^free$/i.test(costStr.trim())) return {amount:0, unit:'week'};
-  const m = costStr.match(/£\s*(\d+(?:\.\d+)?)\s*\/\s*(wk|week|session|month|term)/i);
+  const m = costStr.match(/£\s*(\d+(?:\.\d+)?)\s*\/\s*(wk|week|session|month|term|year)/i);
   if(!m) return null;
   let unit = m[2].toLowerCase();
   if(unit==='wk'||unit==='week'||unit==='session') unit='week';
   else if(unit==='month') unit='month';
   else if(unit==='term') unit='term';
+  else if(unit==='year') unit='year';
   return {amount:parseFloat(m[1]), unit};
 }
 function whoLabel(who){ return who==='both'?'Both':who==='jacob'?'Jacob':who==='noah'?'Noah':'Family'; }
@@ -776,6 +784,8 @@ function renderCosts(){
   const weeklyItems = priced.filter(a=>parseCostAmount(a.cost).unit==='week');
   const monthlyItems = priced.filter(a=>parseCostAmount(a.cost).unit==='month');
   const termItems = priced.filter(a=>parseCostAmount(a.cost).unit==='term');
+  const yearlyItems = priced.filter(a=>parseCostAmount(a.cost).unit==='year');
+  const termProjectable = priced.filter(a=>parseCostAmount(a.cost).unit!=='year');
 
   const sumFor = (items, who) => items.reduce((s,a)=>{
     if(a.who===who || a.who==='both') return s + parseCostAmount(a.cost).amount;
@@ -785,10 +795,12 @@ function renderCosts(){
   const jWeekly = sumFor(weeklyItems,'jacob'), nWeekly = sumFor(weeklyItems,'noah');
   const jMonthly = sumFor(monthlyItems,'jacob'), nMonthly = sumFor(monthlyItems,'noah');
   const jTerm = sumFor(termItems,'jacob'), nTerm = sumFor(termItems,'noah');
+  const jYearly = sumFor(yearlyItems,'jacob'), nYearly = sumFor(yearlyItems,'noah');
 
   const weeklyTotal = jWeekly + nWeekly;
   const monthlyTotal = jMonthly + nMonthly;
   const termTotal = jTerm + nTerm;
+  const yearlyTotal = jYearly + nYearly;
 
   const TERM_MONTHS = 4; // Sep, Oct, Nov, Dec — the four calendar months the autumn term spans
   function wholeTermCostFor(a){
@@ -801,7 +813,7 @@ function renderCosts(){
     if(p.unit==='month') return p.amount * TERM_MONTHS;
     return p.amount; // one-off / whole-term amount already
   }
-  const sumWholeTerm = (who) => priced.reduce((s,a)=>{
+  const sumWholeTerm = (who) => termProjectable.reduce((s,a)=>{
     if(a.who===who || a.who==='both') return s + wholeTermCostFor(a);
     return s;
   }, 0);
@@ -837,6 +849,16 @@ function renderCosts(){
       </table>
     </div>` : ''}
 
+    ${yearlyItems.length ? `
+    <div class="cost-card">
+      <h3>Known annual costs</h3>
+      <table class="costs">
+        <thead><tr><th>Activity</th><th class="num">Cost</th></tr></thead>
+        <tbody>${costTable(yearlyItems, false)}</tbody>
+      </table>
+      <div class="footnote" style="margin-top:10px;">These are yearly memberships (e.g. rugby club membership), not charges for this term alone — kept separate from the term total below since they cover a much longer period.</div>
+    </div>` : ''}
+
 
     <div class="cost-card">
       <h3>Total for the whole term</h3>
@@ -858,7 +880,7 @@ function renderCosts(){
         <summary>Show breakdown by activity</summary>
         <table class="costs">
           <thead><tr><th>Activity</th><th>Basis</th><th class="num">Term total</th></tr></thead>
-          <tbody>${priced.slice().sort((a,b)=>{
+          <tbody>${termProjectable.slice().sort((a,b)=>{
             const order = {jacob:0, both:1, noah:2, family:1};
             return (order[a.who]??3) - (order[b.who]??3) || a.title.localeCompare(b.title);
           }).map(a=>{
@@ -887,6 +909,7 @@ function renderCosts(){
       </div>
       ${monthlyTotal>0?`<div class="total-strip" style="margin-top:10px;"><span class="label">Monthly total</span><span class="amount">£${monthlyTotal.toFixed(2)}</span></div>`:''}
       ${termTotal>0?`<div class="total-strip" style="margin-top:10px;"><span class="label">One-off total</span><span class="amount">£${termTotal.toFixed(2)}</span></div>`:''}
+      ${yearlyTotal>0?`<div class="total-strip" style="margin-top:10px;"><span class="label">Annual membership total</span><span class="amount">£${yearlyTotal.toFixed(2)}</span></div>`:''}
       <div class="footnote" style="margin-top:10px;">Household total = Jacob's total + Noah's total. Shared activities like BJJ are counted once per child (each has their own paid place), so they add up rather than being split.</div>
       <div class="footnote" style="margin-top:6px;">${tbcCount} ${tbcCount===1?'activity':'activities'} still ${tbcCount===1?'needs':'need'} a cost confirmed or a booking completed — see "Needs attention" above. These aren't included in any total yet.</div>
     </div>
